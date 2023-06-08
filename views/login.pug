@@ -1,0 +1,9 @@
+div.login
+  form(method='post' action='/login')
+    .formfield
+      label(for='username') Username: 
+      input#username(type='text' name='username')
+    .formfield 
+      label(for='password') Password: 
+      input#password(type='password' name='password')
+    button(type='submit') Login!

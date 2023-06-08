@@ -1,3 +1,4 @@
+const passport = require('passport');
 const express = require('express');
 const post_register_debug = require('debug')('auth:post_register');
 const asyncHandler = require('express-async-handler');
@@ -101,3 +102,18 @@ exports.post_register = [
     res.redirect('/');
   }),
 ];
+
+exports.post_login = [
+  express.json(),
+  express.urlencoded({ extended: false }),
+  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/' }),
+];
+
+exports.get_logout = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+}

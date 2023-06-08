@@ -7,11 +7,8 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
-const LocalStrategy = require('passport-localstrategy');
-const configPassportLocalStrategy = require('./utils/configLocalStrategy.js');
 const authRouter = require('./routes/authentication-routes');
 const User = require('./models/user.js');
-const { validPassword } = require('./utils/passwordUtils.js');
 
 connectMongo()
   .then(() => console.log('Connected to Database'))
@@ -31,7 +28,7 @@ const mongoStore = MongoStore.create({
   collectionName: 'sessions',
 });
 
-configPassportLocalStrategy(passport, LocalStrategy);
+require('./utils/configPassportLocalStrategy.js');
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -47,7 +44,13 @@ app.use(passport.session());
 
 app.use(authRouter);
 
-app.get('/', (req, res, next) => res.render('index'));
+app.get('/',
+  (req, res, next) => {
+    res.render('index', {
+      user: req.user,
+    });  
+  }
+);
 
 app.listen(3000, () => {
   console.log('Listening on port 3000');

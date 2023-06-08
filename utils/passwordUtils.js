@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-
 function generateSaltHash(password) {
   const normalizedPwd = password.normalize();
   const salt = crypto.randomBytes(32).toString('hex');
