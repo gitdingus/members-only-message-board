@@ -7,9 +7,11 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
+const asyncHandler = require('express-async-handler');
 const authRouter = require('./routes/authentication-routes');
 const messageRouter = require('./routes/message-routes.js');
 const User = require('./models/user.js');
+const Message = require('./models/message.js');
 
 connectMongo()
   .then(() => console.log('Connected to Database'))
@@ -47,11 +49,14 @@ app.use(authRouter);
 app.use('/messages', messageRouter);
 
 app.get('/',
-  (req, res, next) => {
+  asyncHandler(async(req, res, next) => {
+    const messages = await Message.find({}, 'title').exec();
+
     res.render('index', {
       user: req.user,
+      messages: messages,
     });  
-  }
+  }),
 );
 
 app.listen(3000, () => {

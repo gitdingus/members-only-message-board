@@ -7,6 +7,6 @@ block content
     if messages
       each message in messages 
         .message 
-          p Placeholder text for message 
+          p: a(href=message.url) #{message.title}
     else 
       p There are no messages.
