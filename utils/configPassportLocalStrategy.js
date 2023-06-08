@@ -29,7 +29,7 @@ passport.serializeUser(function (user, cb) {
 
 passport.deserializeUser(async function (id, cb) {
   try {
-    const user = await User.findById(id, 'firstName lastName username email');
+    const user = await User.findById(id, 'firstName lastName username email memberStatus');
 
     if (user === null) {
       throw new Error('Error deserializing user: User not found');
