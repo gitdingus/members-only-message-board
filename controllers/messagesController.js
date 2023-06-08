@@ -3,6 +3,7 @@ const passport = require('passport');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const Message = require('../models/message.js');
+const getDeleteDebug = require('debug')('messageController:getDelete');
 
 exports.get_message_detail = asyncHandler(async (req, res, next) => {
   let projection = 'title body';
@@ -74,3 +75,31 @@ exports.post_create_message = [
     res.redirect('/');
   }),
 ];
+
+exports.get_delete_message = asyncHandler(async(req, res, next) => {
+  getDeleteDebug(`Authenticated: ${req.isAuthenticated()}`);
+  getDeleteDebug(`Member Status: ${req.user.memberStatus}`);
+  if (!(req.isAuthenticated() && req.user.memberStatus === 'Admin')) {
+    res.send('Unauthorized');
+    return;
+  }
+
+  const message = await Message.findById(req.params.id);
+
+  res.render('message_delete', {
+    title: 'Delete Message',
+    user: req.user,
+    message: message,
+  });
+  return;
+});
+
+exports.post_delete_message = asyncHandler(async(req, res, next) => {
+  if (!(req.isAuthenticated() && req.user.memberStatus === 'Admin')) {
+    res.send('Unauthorized');
+    return;
+  }
+
+  await Message.findByIdAndDelete(req.params.id);
+  res.redirect('/');
+});
