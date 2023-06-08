@@ -92,9 +92,12 @@ exports.post_register = [
     
     if (req.body.member_password) {
       const secret = await Secret.findOne({ secret: req.body.member_password || '' });
-      newUser.memberStatus = !!secret;
-    } else {
-      newUser.memberStatus = false;
+      
+      if (secret !== null) {
+        newUser.memberStatus = 'Member';
+      } else {
+        newUser.memberStatus = 'User';
+      }
     }
 
     await newUser.save();

@@ -43,10 +43,10 @@ const userSchema = new Schema({
     minLength: 128,
   },
   memberStatus: {
-    type: Boolean,
+    type: String,
     required: true,
+    enum: [ 'Member', 'User', 'Admin' ],
   },
-  isAdmin: Boolean,
 });
 
 module.exports = mongoose.model('User', userSchema);
