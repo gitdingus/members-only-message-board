@@ -28,4 +28,8 @@ const messageSchema = new Schema({
   }
 });
 
+messageSchema.virtual('url').get(function () {
+  return `/messages/${this._id}`;
+});
+
 module.exports = mongoose.model('Message', messageSchema);

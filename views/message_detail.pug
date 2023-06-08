@@ -1,0 +1,15 @@
+extends layout 
+
+block content 
+  if !message
+    p There has been a problem displaying the message 
+  else 
+    p= message.title 
+    p= message.body 
+    if message.timestamp
+      p= message.timestamp 
+    if message.author 
+      p= message.author.username
+
+  if user && user.memberStatus === 'Admin' 
+    a(href=`${message.url}/delete`) Delete Message

@@ -4,6 +4,25 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const Message = require('../models/message.js');
 
+exports.get_message_detail = asyncHandler(async (req, res, next) => {
+  let projection = 'title body';
+  const messageQuery = Message.findById(req.params.id).select('title body');
+  const privledgedUsers = ['Admin', 'Member'];
+  if (req.isAuthenticated() === true && privledgedUsers.includes(req.user.memberStatus) === true) {
+    messageQuery
+      .select('author timestamp')
+      .populate('author', 'username');
+  }
+
+  const message = await messageQuery.exec();
+
+  res.render('message_detail', {
+    title: 'View Message',
+    message: message,
+    user: req.user,
+  });
+});
+
 exports.get_create_message = (req, res, next) => {
   if (req.isAuthenticated() === true) {
     res.render('message_form', {
