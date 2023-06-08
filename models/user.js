@@ -40,7 +40,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
     trim: true,
-    minLength: 64,
+    minLength: 128,
   },
   memberStatus: {
     type: Boolean,
