@@ -1,0 +1,12 @@
+inherits layout 
+
+block content 
+  form(method='post' action='') 
+    .formfield  
+      label(for='title') Title: 
+      input#title(type='text' name='title' maxlength=50 required)
+    .formfield 
+      label(for='body') Message: 
+      textarea#body(name='body' required maxlength=500)
+
+    button(type='submit') Post Message!
