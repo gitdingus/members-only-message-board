@@ -5,9 +5,15 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Members Only Message Board #{title ? `- ${title}` : ''}
   body 
-    if !user
-      include login.pug
-    else 
-      include logout.pug
+    .banner 
+      .nav 
+        ul
+          li: a(href='/') Main page
+          li: a(href='/messages/create') Create Message
+      .auth
+        if !user
+          include login.pug
+        else 
+          include logout.pug
     div.content
       block content

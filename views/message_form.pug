@@ -1,12 +1,16 @@
-inherits layout 
+extends layout 
 
 block content 
   form(method='post' action='') 
     .formfield  
       label(for='title') Title: 
-      input#title(type='text' name='title' maxlength=50 required)
+      input#title(type='text' name='title' maxlength=50 value=(message) ? message.title : '')
     .formfield 
       label(for='body') Message: 
-      textarea#body(name='body' required maxlength=500)
+      textarea#body(name='body' maxlength=500) #{message ? message.body : ''}
 
     button(type='submit') Post Message!
+
+  if errors 
+    each error in errors  
+      p= error.msg

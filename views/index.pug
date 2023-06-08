@@ -2,3 +2,11 @@ extends layout
 
 block content 
   h1 Welcome to the Members Only Club! 
+
+  .messages
+    if messages
+      each message in messages 
+        .message 
+          p Placeholder text for message 
+    else 
+      p There are no messages.

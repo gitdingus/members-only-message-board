@@ -8,6 +8,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const authRouter = require('./routes/authentication-routes');
+const messageRouter = require('./routes/message-routes.js');
 const User = require('./models/user.js');
 
 connectMongo()
@@ -43,6 +44,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(authRouter);
+app.use('/messages', messageRouter);
 
 app.get('/',
   (req, res, next) => {
