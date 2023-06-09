@@ -5,6 +5,7 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Members Only Message Board #{title ? `- ${title}` : ''}
     link(rel='stylesheet' href='/styles/layout.css')
+    block head
   body 
     header
       h1 Members Only Message Board
@@ -17,5 +18,33 @@ html(lang="en")
       ul
         li: a(href='/') Main page
         li: a(href='/messages/create') Create Message
-    div.content
+    .content
       block content
+
+    footer
+      .links
+        .about
+          h3 About 
+          ul 
+            li: a(href='/') lorem ipsum 
+            li: a(href='/') dolor
+            li: a(href='/') sit amet 
+            li: a(href='/') consectetur adipiscing 
+        .help 
+          h3 Help 
+          ul 
+            li: a(href='/') elit 
+            li: a(href='/') alliquam 
+            li: a(href='/') et tincidunt 
+            li: a(href='/') sapien
+        .contact 
+          h3 Contact 
+          ul
+            li: a(href='/') vivamus 
+            li: a(href='/') ac mi vel 
+            li: a(href='/') nibh efficitur 
+            li: a(href='/') rutrum
+      .disclaimer 
+        p By using this site you agree to the terms and conditions of being a cool dude/dudette.
+        p Any violation of these terms will result in being a big jerk 
+        p Fake Company &copy; 2023 

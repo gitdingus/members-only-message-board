@@ -1,19 +1,37 @@
+:root {
+  --link-color-header-footer: lightcoral;
+  --link-color-content: rgb(0, 132, 255);
+}
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh;
+}
 body {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding: 0;
-
-  background-color: lightcyan;
+  background-color: rgb(224, 253, 253);
 }
-header {
+
+header, footer {
   padding: 8px;
   position: relative;
   background-color: cyan;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+}
 header h1 {
   text-align: center;
   font-family: Verdana;
   font-weight: 300;
+  margin-left: 3rem;
 }
 
 .login p{
@@ -22,9 +40,6 @@ header h1 {
   font-family: Arial;
 }
 header .login { 
-  position: absolute;
-  top: 10px;
-  right: 10px;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -32,6 +47,8 @@ header .login {
 
 header form .formfield {
   display: flex;
+  gap: 4px;
+  margin: 4px;
   flex-direction: row;
   font-size: .9em;
 }
@@ -88,9 +105,84 @@ nav ul li {
 
 nav ul li a {
   text-decoration: none;
-  color: lightcoral;
+  color: var(--link-color-header-footer);
 }
 
 nav ul li:hover {
   transform: scale(1.2);
+}
+
+.content {
+  flex: 1;
+  padding: 4em;
+  padding-top: 0;
+}
+
+.content h1,
+.content h2 {
+  font-family: Verdana;
+  font-weight: 200;
+}
+
+.messages {
+  padding: 0 4em;
+}
+
+.messages a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: var(--link-color-content);
+}
+
+footer {
+  position: sticky;
+  bottom: 0px;
+  border-top: 2px solid rgba(0, 0, 0, .2);
+}
+
+footer .links div {
+  text-align: center;
+  min-width: 15%;
+}
+
+footer .links {
+  display: flex;
+  justify-content: center;
+}
+
+footer .about,
+footer .help,
+footer .contact {
+  display: inline-block;
+  margin: 8px;
+}
+
+footer .disclaimer {
+  font-size: .8rem;
+}
+
+footer .disclaimer p {
+  margin: 2px 0;
+  text-align: center;
+}
+footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: .85rem;
+}
+
+footer h3 {
+  font-size: .9rem;
+  font-weight: 300;
+  margin: 4px 0;
+}
+
+footer a {
+  color: var(--link-color-header-footer);
+
+}
+
+.byline {
+  font-size: .8rem;
 }
