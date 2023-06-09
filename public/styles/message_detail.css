@@ -1,0 +1,12 @@
+.message {
+  width: 65%;
+}
+
+.body {
+  white-space: pre-line;
+  margin-left: 2rem;
+}
+.byline {
+  font-size: .8rem;
+  margin-left: 2rem;
+}
