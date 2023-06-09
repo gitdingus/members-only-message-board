@@ -84,7 +84,7 @@ exports.get_delete_message = asyncHandler(async(req, res, next) => {
     return;
   }
 
-  const message = await Message.findById(req.params.id);
+  const message = await Message.findById(req.params.id).populate('author', 'username');
 
   res.render('message_delete', {
     title: 'Delete Message',
