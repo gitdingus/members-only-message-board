@@ -1,0 +1,30 @@
+form {
+  margin-left: 3rem;
+
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 100px minmax(100px, 500px);
+}
+
+form input,
+form textarea {
+  font-size: 1rem;
+  font-family: Verdana;
+  padding: 5px;
+}
+form textarea {
+  max-width: 500px;
+  min-height: 200px;
+  resize: vertical;
+}
+form .buttons {
+  grid-column: 2 / 3;
+
+  display: flex;
+  justify-content: flex-end;
+}
+
+form .buttons button {
+  font-size: 1rem;
+  padding: 4px 20px;
+}

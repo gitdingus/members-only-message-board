@@ -1,15 +1,17 @@
 extends layout 
 
-block content 
-  form(method='post' action='') 
-    .formfield  
-      label(for='title') Title: 
-      input#title(type='text' name='title' maxlength=50 value=(message) ? message.title : '')
-    .formfield 
-      label(for='body') Message: 
-      textarea#body(name='body' maxlength=500) #{message ? message.body : ''}
+block head 
+  link(rel='stylesheet' href='/styles/message_form.css')
 
-    button(type='submit') Post Message!
+block content 
+  h1 Create new message
+  form(method='post' action='') 
+    label(for='title') Title: 
+    input#title(type='text' name='title' maxlength=50 value=(message) ? message.title : '')
+    label(for='body') Message: 
+    textarea#body(name='body' maxlength=500) #{message ? message.body : ''}
+    .buttons
+      button(type='submit') Post
 
   if errors 
     each error in errors  
