@@ -53,8 +53,17 @@ app.use('/messages', messageRouter);
 
 app.get('/',
   asyncHandler(async(req, res, next) => {
-    const messages = await Message.find({}, 'title').exec();
+    const messageQuery = Message.find({}, 'title');
+    const privledgedUsers = ['Admin', 'Member'];
 
+    if (req.isAuthenticated() && privledgedUsers.includes(req.user.memberStatus)) {
+      messageQuery 
+        .select('timestamp author')
+        .populate('author', 'username');
+    }
+
+    const messages = await messageQuery.exec();
+    
     res.render('index', {
       user: req.user,
       messages: messages,
