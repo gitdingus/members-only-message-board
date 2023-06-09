@@ -1,0 +1,18 @@
+.content form {
+  display: grid;
+  grid-template-columns: 175px minmax(100px, 500px);
+  gap: 8px;
+  margin-left: 2rem;
+  align-items: center;
+}
+
+.content form label {
+  text-align: right;
+}
+
+.content form input {
+  padding: 5px;
+}
+.content form button {
+  grid-column: 2 / 3;
+}
