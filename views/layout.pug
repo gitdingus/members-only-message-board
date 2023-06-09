@@ -4,16 +4,18 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Members Only Message Board #{title ? `- ${title}` : ''}
+    link(rel='stylesheet' href='/styles/layout.css')
   body 
-    .banner 
-      .nav 
-        ul
-          li: a(href='/') Main page
-          li: a(href='/messages/create') Create Message
+    header
+      h1 Members Only Message Board
       .auth
         if !user
           include login.pug
         else 
           include logout.pug
+    nav         
+      ul
+        li: a(href='/') Main page
+        li: a(href='/messages/create') Create Message
     div.content
       block content

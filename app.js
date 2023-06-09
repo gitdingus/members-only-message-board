@@ -2,6 +2,7 @@ if (process.env.MODE !== 'production') {
   require('dotenv').config();
 }
 
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -44,6 +45,8 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(authRouter);
 app.use('/messages', messageRouter);
