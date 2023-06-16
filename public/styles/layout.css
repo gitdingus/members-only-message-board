@@ -4,6 +4,7 @@
   --header-nav-footer-bg-color: #d1d5db;
   --body-bg-color: #f3f4f6;
   --header-button-a-bgcolor: #9ca3af;
+  --message-link-hover-color: #9ca3af;
 }
 * {
   box-sizing: border-box;
@@ -145,6 +146,10 @@ nav ul li:hover {
   text-decoration: none;
   font-size: 1.2rem;
   color: var(--link-color-content);
+}
+
+.messages a:hover {
+  color: var(--message-link-hover-color);
 }
 
 footer {
