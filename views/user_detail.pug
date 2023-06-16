@@ -1,0 +1,33 @@
+extends layout 
+
+block head 
+
+block content 
+
+  if userInfo
+    h1 User Profile for #{userInfo.username}
+
+    if userInfo.firstName && userInfo.lastName
+      p Name: #{userInfo.firstName} #{userInfo.lastName}
+    if userInfo.email
+      p Email: #{userInfo.email}
+    p Member Status: #{userInfo.memberStatus}
+  else 
+    p User not found
+
+
+  .messages
+  if messages
+    each message in messages 
+      .message 
+        p: a(href=message.url) #{message.title}
+
+        if (message.author && message.timestamp)
+          .byline 
+            p Left on #[span #{message.timestamp.toLocaleString()}]
+
+  if isAdmin
+    p Placeholder: Hello Admin 
+  
+  if isUsersOwnProfile 
+    p Placeholder: This is your own profile!

@@ -10,6 +10,7 @@ const asyncHandler = require('express-async-handler');
 const createError = require('http-errors');
 const authRouter = require('./routes/authentication-routes');
 const messageRouter = require('./routes/message-routes.js');
+const userRouter = require('./routes/user-routes');
 const User = require('./models/user.js');
 const Message = require('./models/message.js');
 
@@ -49,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(authRouter);
 app.use('/messages', messageRouter);
+app.use('/users', userRouter);
 
 app.get('/',
   asyncHandler(async(req, res, next) => {
@@ -89,6 +91,7 @@ app.use((err, req, res, next) => {
 
   res.status(err.status);
   res.render('error', {
+    user: req.user,
     message: `${err.status} - ${err.message}`,
     stack: err.stack,
   });
