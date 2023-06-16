@@ -142,13 +142,13 @@ nav ul li:hover {
   padding: 0 4em;
 }
 
-.messages a {
+.message a {
   text-decoration: none;
   font-size: 1.2rem;
   color: var(--link-color-content);
 }
 
-.messages a:hover {
+.message a:hover {
   color: var(--message-link-hover-color);
 }
 
@@ -204,6 +204,7 @@ footer a {
 
 }
 
-.byline {
+.byline,
+.byline a  {
   font-size: .8rem;
 }

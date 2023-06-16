@@ -2,6 +2,7 @@ extends layout
 
 block head 
   link(rel='stylesheet' href='/styles/message_detail.css')
+  
 block content 
   if !message
     p There has been a problem displaying the message 
@@ -12,7 +13,7 @@ block content
       if message.timestamp && message.author
         .byline 
           p
-            span !{message.author.username} 
+            span: a(href=message.author.url) !{message.author.username} 
             | on
             span  !{message.timestamp.toLocaleString()}
 

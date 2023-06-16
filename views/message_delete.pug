@@ -14,7 +14,7 @@ block content
       if message.timestamp && message.author
         .byline 
           p
-            span !{message.author.username} 
+            span: a(href=message.author.url) !{message.author.username} 
             | on
             span  !{message.timestamp.toLocaleString()}
   form(method='post' action='')

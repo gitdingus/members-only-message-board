@@ -12,7 +12,7 @@ block content
           if (message.author && message.timestamp)
             .byline 
               p
-                span !{message.author.username} 
+                span: a(href=message.author.url) !{message.author.username} 
                 | on
                 span  !{message.timestamp.toLocaleString()}
 

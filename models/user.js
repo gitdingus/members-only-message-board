@@ -47,6 +47,10 @@ const userSchema = new Schema({
     required: true,
     enum: [ 'Member', 'User', 'Admin' ],
   },
+  publicProfile: Boolean,
 });
 
+userSchema.virtual('url').get(function () {
+  return `/users/${this.username}`;
+});
 module.exports = mongoose.model('User', userSchema);
