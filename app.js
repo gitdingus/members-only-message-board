@@ -1,6 +1,4 @@
-if (process.env.MODE !== 'production') {
-  require('dotenv').config();
-}
+require('dotenv').config();
 
 const path = require('path');
 const express = require('express');
@@ -9,6 +7,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const asyncHandler = require('express-async-handler');
+const createError = require('http-errors');
 const authRouter = require('./routes/authentication-routes');
 const messageRouter = require('./routes/message-routes.js');
 const User = require('./models/user.js');
@@ -71,6 +70,30 @@ app.get('/',
   }),
 );
 
-app.listen(3000, () => {
-  console.log('Listening on port 3000');
+app.use((req, res, next) => {
+  next(createError(404, 'File not found'));
+});
+
+app.use((err, req, res, next) => {
+  // FIX THIS MAKE SURE IT HANDLES 
+  // INTERNAL ERRORS
+  err.status = err.status || 500;
+
+  if (process.env.NODE_ENV === 'production') {
+    if (err.status == 500) {
+      err.message = 'Internal Server Error';
+    }
+
+    err.stack = '';
+  }
+
+  res.status(err.status);
+  res.render('error', {
+    message: `${err.status} - ${err.message}`,
+    stack: err.stack,
+  });
+})
+
+app.listen(process.env.PORT, () => {
+  console.log(`Listening on port ${process.env.PORT}`);
 });
