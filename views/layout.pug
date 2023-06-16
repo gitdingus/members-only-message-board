@@ -8,7 +8,9 @@ html(lang="en")
     block head
   body 
     header
-      h1 Members Only Message Board
+      .logo
+        h1 Message Board
+        p Members only
       .auth
         if !user
           include login.pug
