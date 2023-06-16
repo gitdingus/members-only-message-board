@@ -1,6 +1,9 @@
 :root {
-  --link-color-header-footer: lightcoral;
-  --link-color-content: rgb(0, 132, 255);
+  --link-color-header-footer: #6b7280;
+  --link-color-content: #6b7280;
+  --header-nav-footer-bg-color: #d1d5db;
+  --body-bg-color: #f3f4f6;
+  --header-button-a-bgcolor: #9ca3af;
 }
 * {
   box-sizing: border-box;
@@ -14,24 +17,34 @@ body {
   flex-direction: column;
   margin: 0;
   padding: 0;
-  background-color: rgb(224, 253, 253);
+  background-color: var(--body-bg-color);
 }
 
 header, footer {
   padding: 8px;
   position: relative;
-  background-color: cyan;
+  background-color: var(--header-nav-footer-bg-color);
 }
 
 header {
   display: flex;
   justify-content: space-between;
 }
-header h1 {
-  text-align: center;
+
+header .logo {
+  margin-left: 3rem;
+}
+
+header .logo h1 {
   font-family: Verdana;
   font-weight: 300;
-  margin-left: 3rem;
+  margin-bottom: 5px;
+}
+
+header .logo p {
+  font-family: Verdana;
+  font-weight: 200;
+  margin: 0;
 }
 
 .login p{
@@ -70,7 +83,7 @@ header form .buttons button {
   margin: 0;
   border: 0;
   color: black;
-  background-color: lightcoral;
+  background-color: var(--header-button-a-bgcolor);
   text-decoration: none;
   font-family: Verdana;
   font-size: 1em;
@@ -79,15 +92,15 @@ header form .buttons button {
 
 nav {
   display: flex;
-  justify-content: center;
-  background-color: cyan;
-  border: 1px solid rgba(0, 0, 0, .2);
+  justify-content: flex-start;
+  border-top: 1px solid rgba(0, 0, 0, .2);
   border-bottom:2px solid rgba(0, 0, 0, .2);
+  background-color: var(--header-nav-footer-bg-color);
 }
 
 nav ul {
   list-style: none;
-  margin: 0;
+  margin: 0 2rem;
   padding: 0;
 
   display: flex;
@@ -135,35 +148,38 @@ nav ul li:hover {
 }
 
 footer {
-  position: sticky;
+  /* position: sticky; */
   bottom: 0px;
   border-top: 2px solid rgba(0, 0, 0, .2);
 }
 
+footer div {
+  margin: 1rem 0;
+}
+
 footer .links div {
-  text-align: center;
   min-width: 15%;
 }
 
 footer .links {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  margin: 0 2rem;
 }
 
 footer .about,
 footer .help,
 footer .contact {
   display: inline-block;
-  margin: 8px;
 }
 
 footer .disclaimer {
   font-size: .8rem;
+  margin: 0 2rem;
 }
 
 footer .disclaimer p {
-  margin: 2px 0;
-  text-align: center;
+  margin: 3px 0;
 }
 footer ul {
   list-style: none;
