@@ -1,9 +1,24 @@
 const express = require('express');
 const passport = require('passport');
 const asyncHandler = require('express-async-handler');
+const createError = require('http-errors');
 const { body, validationResult } = require('express-validator');
 const Message = require('../models/message.js');
 const getDeleteDebug = require('debug')('messageController:getDelete');
+
+const adminOnly = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.memberStatus !== 'Admin') {
+      const err = createError(403, 'Forbidden');
+      return next(err);
+    }
+  } else {
+    const err = createError(401, 'Not authorized');
+    return next(err);
+  }
+
+  next();
+}
 
 exports.get_message_detail = asyncHandler(async (req, res, next) => {
   let projection = 'title body';
@@ -25,16 +40,15 @@ exports.get_message_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.get_create_message = (req, res, next) => {
-  if (req.isAuthenticated() === true) {
-    res.render('message_form', {
-      title: 'Create Message',
-      user: req.user,
-    });
-    return;
-  } else {
-    res.send('Access Denied');
-    return;
+  if (req.isAuthenticated() === false) {
+    const err = createError(401, 'Unauthorized');
+    return next(err);
   }
+
+  res.render('message_form', {
+    title: 'Create Message',
+    user: req.user,
+  });
 };
 
 exports.post_create_message = [
@@ -50,9 +64,10 @@ exports.post_create_message = [
     .escape(),
   asyncHandler(async(req, res, next) => {
     if (req.isAuthenticated() === false) {
-      res.send('Unauthorized');
-      return;
+      const err = createError(401, 'Unauthorized');
+      return next(err);
     }
+
     const errors = validationResult(req);
     const message = new Message({
       title: req.body.title,
@@ -76,30 +91,29 @@ exports.post_create_message = [
   }),
 ];
 
-exports.get_delete_message = asyncHandler(async(req, res, next) => {
-  getDeleteDebug(`Authenticated: ${req.isAuthenticated()}`);
-  getDeleteDebug(`Member Status: ${req.user.memberStatus}`);
-  if (!(req.isAuthenticated() && req.user.memberStatus === 'Admin')) {
-    res.send('Unauthorized');
+exports.get_delete_message = [
+  adminOnly,
+  asyncHandler(async(req, res, next) => {
+    getDeleteDebug(`Authenticated: ${req.isAuthenticated()}`);
+    if (req.isAuthenticated()) {
+      getDeleteDebug(`Member Status: ${req.user.memberStatus}`);
+    } 
+
+    const message = await Message.findById(req.params.id).populate('author', 'username');
+
+    res.render('message_delete', {
+      title: 'Delete Message',
+      user: req.user,
+      message: message,
+    });
     return;
-  }
+  })
+];
 
-  const message = await Message.findById(req.params.id).populate('author', 'username');
-
-  res.render('message_delete', {
-    title: 'Delete Message',
-    user: req.user,
-    message: message,
-  });
-  return;
-});
-
-exports.post_delete_message = asyncHandler(async(req, res, next) => {
-  if (!(req.isAuthenticated() && req.user.memberStatus === 'Admin')) {
-    res.send('Unauthorized');
-    return;
-  }
-
-  await Message.findByIdAndDelete(req.params.id);
-  res.redirect('/');
-});
+exports.post_delete_message = [
+  adminOnly,
+  asyncHandler(async(req, res, next) => {
+    await Message.findByIdAndDelete(req.params.id);
+    res.redirect('/');
+  })
+];
