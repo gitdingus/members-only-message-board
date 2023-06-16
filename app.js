@@ -61,7 +61,7 @@ app.get('/',
         .populate('author', 'username');
     }
 
-    const messages = await messageQuery.exec();
+    const messages = await messageQuery.sort({timestamp: 'desc'}).exec();
     
     res.render('index', {
       user: req.user,
