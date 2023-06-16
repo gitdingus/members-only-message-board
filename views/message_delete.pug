@@ -1,17 +1,22 @@
 extends layout 
 
+block head 
+  link(rel='stylesheet' href='/styles/message_detail.css')
+
 block content 
 
   if !message
     p There has been a problem displaying the message 
   else 
-    p= message.title 
-    p= message.body 
-    if message.timestamp
-      p= message.timestamp 
-    if message.author 
-      p= message.author.username
-
+    .message
+      h2 !{message.title} 
+      p.body !{message.body} 
+      if message.timestamp && message.author
+        .byline 
+          p
+            span !{message.author.username} 
+            | on
+            span  !{message.timestamp.toLocaleString()}
   form(method='post' action='')
     p Are you sure you want to delete this message?
     button(type='submit') Delete Message
