@@ -14,6 +14,7 @@ exports.get_user_details = asyncHandler(async (req, res, next) => {
     }
   } else {
     const err = createError(401, 'Unauthorized');
+    return next(err);
   }
 
   const user = await User
@@ -38,6 +39,7 @@ exports.get_user_details = asyncHandler(async (req, res, next) => {
   }
 
   res.render('user_detail', {
+    title: `Profile - ${user.username}`,
     user: req.user,
     userInfo: user,
     messages,
