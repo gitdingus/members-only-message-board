@@ -1,0 +1,18 @@
+extends layout 
+
+block head 
+  link(rel='stylesheet' href='/styles/register_form.css')
+block content 
+  h2 Update Personal Information
+  form(method='post' action=`${user.url}/update-info`)
+    label(for='first_name') First Name: 
+    input#first_name(type='text' name='first_name' value=(user) ? user.firstName : 'default')
+    label(for='last_name') Last Name: 
+    input#last_name(type='text' name='last_name' value=(user) ? user.lastName : '')
+    label(for='email') Email Address: 
+    input#email(type='text' name='email' value=(user) ? user.email : '')
+    button(type='submit') Update
+
+  if errors 
+    each error in errors 
+      p= error.msg

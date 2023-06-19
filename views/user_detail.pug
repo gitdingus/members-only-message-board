@@ -1,9 +1,20 @@
 extends layout 
 
 block head 
+  link(rel='stylesheet' href='/styles/user_detail.css')
 
 block content 
 
+  if isUsersOwnProfile 
+    .userOptions.side
+      h2 Manage Account 
+      ul
+        li: a(href=`${user.url}/update-info`) Update Personal Information 
+        li: a(href=`${user.url}/change-password`) Change Password
+        li: a(href=`${user.url}/account-settings`) Account Settings
+        li: a(href=`${user.url}/membership-status`) Membership Status
+        li: a(href=`${user.url}/delete-account`) Delete Account
+  
   if userInfo
     h1 User Profile for #{userInfo.username}
 
@@ -29,5 +40,3 @@ block content
   if isAdmin
     p Placeholder: Hello Admin 
   
-  if isUsersOwnProfile 
-    p Placeholder: This is your own profile!

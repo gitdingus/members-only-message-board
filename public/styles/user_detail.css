@@ -1,0 +1,9 @@
+.side {
+  float: right;
+}
+
+.userOptions ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
