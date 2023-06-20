@@ -5,17 +5,8 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/user.js');
 const Secret = require('../models/secret.js');
-const { generateSaltHash } = require('../utils/passwordUtils.js');
+const { generateSaltHash, passwordConfig } = require('../utils/passwordUtils.js');
 
-const passwordConfig = { 
-  // Make stronger in prod
-  minLength: 5,
-  minLowercase: 0,
-  minUppercase: 0,
-  minNumbers: 0,
-  minSymbols: 0,
-  returnScore: false,
-};
 
 exports.get_register = (req, res, next) => {
   res.render('register_form', {

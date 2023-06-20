@@ -1,4 +1,15 @@
 const crypto = require('crypto');
+
+const passwordConfig = { 
+  // Make stronger in prod
+  minLength: 5,
+  minLowercase: 0,
+  minUppercase: 0,
+  minNumbers: 0,
+  minSymbols: 0,
+  returnScore: false,
+};
+
 function generateSaltHash(password) {
   const normalizedPwd = password.normalize();
   const salt = crypto.randomBytes(32).toString('hex');
@@ -17,6 +28,7 @@ function validPassword(password, salt, hash) {
 }
 
 module.exports = {
+  passwordConfig,
   generateSaltHash,
   validPassword,
 }
