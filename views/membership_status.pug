@@ -1,0 +1,16 @@
+extends layout 
+
+block content 
+  h1 Membership Status 
+
+  p Status: #{user.memberStatus}
+
+  if user.memberStatus === 'User'
+    form(method='post' action='')
+      label(for='member_password') Member Password: 
+      input#member_password(type='text' name='member_password')
+      button(type='submit') Become Member
+
+  if message
+    p= message
+    

@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/user.js');
 const Message = require('../models/message.js');
+const Secret = require('../models/secret.js');
 const { validPassword, generateSaltHash, passwordConfig } = require('../utils/passwordUtils.js');
 
 const isLoggedInUser = (req, res, next) => {
@@ -190,8 +191,6 @@ exports.post_change_password = [
 
 exports.get_account_settings = [
   isLoggedInUser,
-  express.json(),
-  express.urlencoded({ extended: false }),
   asyncHandler(async(req, res, next) => {
     const userProfileStatus = await User.findById(req.user._id, 'publicProfile').exec();
 
@@ -217,13 +216,39 @@ exports.post_account_settings = [
   }),
 ];
 
-exports.get_membership_status = (req, res, next) => {
-  res.send('GET MEMBERSHIP STATUS: Not implemented');
-};
+exports.get_membership_status = [
+  isLoggedInUser,
+  asyncHandler(async(req, res, next) => {
+    res.render('membership_status', {
+      user: req.user,
+      title: 'Membership Status',
+    });
+  }),
+];
 
-exports.post_membership_status = (req, res, next) => {
-  res.send('POST MEMBERSHIP STATUS: Not implemented');
-};
+exports.post_membership_status = [
+  isLoggedInUser,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  asyncHandler(async (req, res, next) => {
+    const secret = await Secret.findOne({ secret: req.body.member_password }).exec();
+    
+    if (secret === null) {
+      res.render('membership_status', {
+        user: req.user,
+        title: 'Membership Status',
+        message: 'Sorry, that is not a valid password',
+      });
+      return;
+    } else {
+      await User.findByIdAndUpdate(req.user._id, {
+        memberStatus: 'Member',
+      });
+
+      res.redirect(req.user.url);
+    }
+  }),
+];
 
 exports.get_delete_account = (req, res, next) => {
   res.send('GET DELETE ACCOUNT: Not implemented');
