@@ -250,10 +250,40 @@ exports.post_membership_status = [
   }),
 ];
 
-exports.get_delete_account = (req, res, next) => {
-  res.send('GET DELETE ACCOUNT: Not implemented');
-};
+exports.get_delete_account = [
+  isLoggedInUser,
+  asyncHandler(async(req, res, next) => {
+    res.render('delete_account', {
+      title: 'Delete Account',
+      user: req.user,
+    });
+  }),
+];
 
-exports.post_delete_account = (req, res, next) => {
-  res.send('POST DELETE ACCOUNT: Not implemented');
-};
+exports.post_delete_account = [
+  isLoggedInUser,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  asyncHandler(async(req, res, next) => {
+    const userId = req.user._id;
+
+    if (req.body.delete_account === 'delete') {
+      req.logout(async function (err) {
+        if (err) {
+          return next(err);
+        }
+        await User.findByIdAndDelete(userId);
+        res.redirect('/');
+      });
+
+      return;
+    } else {
+      res.render('delete_account', {
+        title: 'Delete Account',
+        user: req.user,
+        errors: [{ msg: 'Must check Delete Account to delete your account' }],
+      });
+    }
+    
+  }),
+]

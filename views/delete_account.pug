@@ -1,0 +1,17 @@
+extends layout 
+
+block content 
+
+  h1 Delete Account 
+
+  form(method='post' action='')
+    p Are you sure you want to delete your account?
+    p Recovery will not be possible.
+
+    input#delete_account(type='checkbox' name='delete_account' value='delete')
+    label(for='delete_account') Delete Account 
+    button(type='submit') Delete
+
+  if errors 
+    each error in errors 
+      p= error.msg
