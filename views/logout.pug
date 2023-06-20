@@ -1,3 +1,3 @@
 .login
-  p Logged in as #{user.username}
+  p Logged in as #[a(href=user.url) #{user.username}]
   p: a(href='/logout') Log out
