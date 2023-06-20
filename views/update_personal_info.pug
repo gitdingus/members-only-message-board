@@ -6,11 +6,11 @@ block content
   h2 Update Personal Information
   form(method='post' action=`${user.url}/update-info`)
     label(for='first_name') First Name: 
-    input#first_name(type='text' name='first_name' value=(user) ? user.firstName : 'default')
+    input#first_name(type='text' name='first_name' value=(userMod) ? userMod.firstName : 'default')
     label(for='last_name') Last Name: 
-    input#last_name(type='text' name='last_name' value=(user) ? user.lastName : '')
+    input#last_name(type='text' name='last_name' value=(userMod) ? userMod.lastName : '')
     label(for='email') Email Address: 
-    input#email(type='text' name='email' value=(user) ? user.email : '')
+    input#email(type='text' name='email' value=(userMod) ? userMod.email : '')
     button(type='submit') Update
 
   if errors 

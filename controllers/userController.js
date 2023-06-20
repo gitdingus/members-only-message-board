@@ -1,7 +1,23 @@
+const express = require('express');
 const asyncHandler = require('express-async-handler');
 const createError = require('http-errors');
+const { body, validationResult } = require('express-validator');
 const User = require('../models/user.js');
 const Message = require('../models/message.js');
+
+const isLoggedInUser = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.username !== req.params.username) {
+      const err = createError(403, 'Forbidden');
+      return next(err);
+    }
+  } else {
+    const err = createError(401, 'Unauthorized');
+    return next(err);
+  }
+
+  next();
+};
 
 exports.get_user_details = asyncHandler(async (req, res, next) => {
   const privledgedUsers = ['Admin', 'Member'];
@@ -49,33 +65,72 @@ exports.get_user_details = asyncHandler(async (req, res, next) => {
 
 });
 
-exports.get_update_info = asyncHandler(async(req, res, next) => {
-  if (req.isAuthenticated()) {
-    if (req.user.username !== req.params.username) {
-      const err = createError(403, 'Forbidden');
+exports.get_update_info = [
+  isLoggedInUser,
+  asyncHandler(async(req, res, next) => {
+    const user = await User.findOne({ username: req.params.username }).exec();
+
+    if (user === null) {
+      const err = createError(404, 'User not found');
       return next(err);
     }
-  } else {
-    const err = createError(401, 'Unauthorized');
-    return next(err);
-  }
 
-  const user = await User.findOne({ username: req.params.username }).exec();
+    res.render('update_personal_info', {
+      title: 'Update Personal Info',
+      userMod: req.user,
+      user: req.user,
+    });
+  }),
+];
 
-  if (user === null) {
-    const err = createError(404, 'User not found');
-    return next(err);
-  }
+exports.post_update_info = [
+  isLoggedInUser,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  body('first_name', 'Must supply first name')
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body('last_name', 'Must supply last name')
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body('email', 'Must supply valid email address')
+    .trim()
+    .escape()
+    .isEmail()
+    .custom(async (requestedEmail, { req }) => {
+      const user = await User.findOne({ email: requestedEmail }, 'email');
 
-  res.render('update_personal_info', {
-    title: 'Update Personal Info',
-    user: req.user,
-  });
-});
+      // if email exists and not logged in users THROW ERROR
+      // returning falsey value with async function does not work.
+      if (user._id.toString() !== req.user._id.toString()) {
+        throw new Error();
+      }
 
-exports.post_update_info = (req, res, next) => {
-  res.send("POST UPDATE INFO: Not Implemented");
-}
+      return true;
+    }).withMessage('An account is already associated with this email address'),
+  asyncHandler(async(req, res, next) => {
+    const errors = validationResult(req);
+    const userMod = {
+      firstName: req.body.first_name,
+      lastName: req.body.last_name,
+      email: req.body.email,
+    }
+    if (!errors.isEmpty()) {
+      res.render('update_personal_info', {
+        title: 'Update Personal Info',
+        user: req.user,
+        userMod: userMod,
+        errors: errors.array(),
+      });
+      return; 
+    }
+
+    await User.findByIdAndUpdate(req.user._id, userMod);
+    res.redirect(req.user.url);
+  }),
+];
 
 exports.get_change_password = (req, res, next) => {
   res.send('GET CHANGE PASSWORD: Not implemented');
