@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/user.js');
 const Message = require('../models/message.js');
+const { validPassword, generateSaltHash, passwordConfig } = require('../utils/passwordUtils.js');
 
 const isLoggedInUser = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -132,13 +133,60 @@ exports.post_update_info = [
   }),
 ];
 
-exports.get_change_password = (req, res, next) => {
-  res.send('GET CHANGE PASSWORD: Not implemented');
-};
+exports.get_change_password = [
+  isLoggedInUser,
+  asyncHandler(async(req, res, next) => {
+    res.render('change_password', {
+      title: 'Change Password',
+      user: req.user,
+    });
+  }),
+];
 
-exports.post_change_password = (req, res, next) => {
-  res.send('POST CHANGE PASSWORD: Not implemented');
-};
+exports.post_change_password = [
+  isLoggedInUser,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  body('current_password', 'Invalid Password')
+    .custom(async (val, { req }) => {
+      const currentUser = await User.findById(req.user._id, 'salt hash').exec();
+
+      if (!validPassword(val, currentUser.salt, currentUser.hash)) {
+        throw new Error();
+      }
+    }),
+  body('new_password', 'Password must be at least 5 characters')
+    .isStrongPassword(passwordConfig), // MAKE STRONGER IN PROD
+  body('confirm_new_password', 'Passwords do not match')
+    .custom((val, { req }) => {
+      return val === req.body.new_password;
+    }),
+  asyncHandler(async(req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render('change_password', {
+        title: 'Change Password',
+        user: req.user,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    const saltHash = generateSaltHash(req.body.new_password);
+
+    await User.findByIdAndUpdate(req.user._id, {
+      salt: saltHash.salt,
+      hash: saltHash.hash,
+    });
+
+    res.render('change_password', {
+      title: 'Change Password',
+      user: req.user,
+      message: 'Password changed successfully',
+    });
+  },)
+];
 
 exports.get_account_settings = (req, res, next) => {
   res.send('GET ACCOUNT SETTINGS: Not implemented');
