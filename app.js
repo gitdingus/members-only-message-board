@@ -34,6 +34,8 @@ const mongoStore = MongoStore.create({
 
 require('./utils/configPassportLocalStrategy.js');
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   cookie: {
@@ -45,8 +47,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(authRouter);
 app.use('/messages', messageRouter);
