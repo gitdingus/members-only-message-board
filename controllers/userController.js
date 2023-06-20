@@ -188,13 +188,34 @@ exports.post_change_password = [
   },)
 ];
 
-exports.get_account_settings = (req, res, next) => {
-  res.send('GET ACCOUNT SETTINGS: Not implemented');
-};
+exports.get_account_settings = [
+  isLoggedInUser,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  asyncHandler(async(req, res, next) => {
+    const userProfileStatus = await User.findById(req.user._id, 'publicProfile').exec();
 
-exports.post_account_settings = (req, res, next) => {
-  res.send('POST ACCOUNT SETTINGS: Not implemented');
-};
+    res.render('account_settings', {
+      title: 'Update Account Settings',
+      user: req.user,
+      publicProfile: userProfileStatus.publicProfile,
+    });
+  }),
+];
+
+exports.post_account_settings = [
+  isLoggedInUser,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  asyncHandler(async(req, res, next) => {
+    const updateObj = {
+      publicProfile: (req.body.profile_type === 'public') ? true : false,
+    };
+
+    await User.findByIdAndUpdate(req.user._id, updateObj);
+    res.redirect(req.user.url);
+  }),
+];
 
 exports.get_membership_status = (req, res, next) => {
   res.send('GET MEMBERSHIP STATUS: Not implemented');

@@ -1,0 +1,12 @@
+extends layout 
+
+block content 
+  h1 Account Settings 
+  form(method='post' action='')
+    input#profile_type(type='checkbox' name='profile_type' value='public' checked=publicProfile)
+    label(for='profile_type') Make Profile Public 
+    button(type='submit') Update Settings
+
+  if errors 
+    each error in errors 
+      p= error.msg
