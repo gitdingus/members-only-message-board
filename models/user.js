@@ -45,7 +45,7 @@ const userSchema = new Schema({
   memberStatus: {
     type: String,
     required: true,
-    enum: [ 'Member', 'User', 'Admin' ],
+    enum: [ 'Member', 'User', 'Admin', 'Restricted', 'Banned' ],
   },
   publicProfile: Boolean,
 });

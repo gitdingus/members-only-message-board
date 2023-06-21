@@ -1,0 +1,12 @@
+extends layout 
+
+block content 
+  h1 Set User Status 
+  p User: #[a(href=userInfo.url) #{userInfo.username}]
+
+  form(method='post' action='') 
+    label(for='set_status') Set Status: 
+    select#set_status(name='status')
+      each status in statuses 
+        option(value=status selected=(status === userInfo.memberStatus) ? true : false)= status
+    button(type='submit') Set Status

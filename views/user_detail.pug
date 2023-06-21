@@ -11,6 +11,7 @@ block content
         .admin-options.options-list
           h2 Admin Actions 
           ul 
+            li: a(href=`${userInfo.adminUrl}/set_user_status`) Set User Status
             li: a(href=`${userInfo.adminUrl}/delete_user_messages`) Delete Users Messages
 
       if isUsersOwnProfile 

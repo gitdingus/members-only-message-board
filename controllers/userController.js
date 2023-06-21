@@ -339,3 +339,34 @@ exports.post_admin_delete_user_messages = [
     }
   }),
 ];
+
+exports.get_admin_set_user_status = [
+  isAdmin,
+  asyncHandler(async(req, res, next) => {
+    const user = await User.findById(req.params.id, 'username memberStatus').exec();
+    const statuses = Array.from(User.schema.obj.memberStatus.enum);
+
+    res.render('admin_set_user_status', {
+      user: req.user,
+      title: 'Set User Status',
+      userInfo: user,
+      statuses: statuses,
+    })
+    return;
+  }),
+];
+
+exports.post_admin_set_user_status = [
+  isAdmin,
+  express.json(),
+  express.urlencoded({ extended: true }),
+  asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.params.id).exec();
+    const newStatus = {
+      memberStatus: req.body.status,
+    };
+
+    await User.findByIdAndUpdate(req.params.id, newStatus);
+    res.redirect(user.url);
+  }),
+];
