@@ -5,15 +5,23 @@ block head
 
 block content 
 
-  if isUsersOwnProfile 
-    .user-options.options-list.side
-      h2 Manage Account 
-      ul
-        li: a(href=`${user.url}/update-info`) Update Personal Information 
-        li: a(href=`${user.url}/change-password`) Change Password
-        li: a(href=`${user.url}/account-settings`) Account Settings
-        li: a(href=`${user.url}/membership-status`) Membership Status
-        li: a(href=`${user.url}/delete-account`) Delete Account
+  if isAdmin || isUsersOwnProfile 
+    .side 
+      if isAdmin
+        .admin-options.options-list
+          h2 Admin Actions 
+          ul 
+            li: a(href=`${userInfo.adminUrl}/delete_user_messages`) Delete Users Messages
+
+      if isUsersOwnProfile 
+        .user-options.options-list
+          h2 Manage Account 
+          ul
+            li: a(href=`${user.url}/update-info`) Update Personal Information 
+            li: a(href=`${user.url}/change-password`) Change Password
+            li: a(href=`${user.url}/account-settings`) Account Settings
+            li: a(href=`${user.url}/membership-status`) Membership Status
+            li: a(href=`${user.url}/delete-account`) Delete Account
   
   if userInfo
     h1 User Profile for #{userInfo.username}

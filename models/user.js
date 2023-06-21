@@ -53,4 +53,9 @@ const userSchema = new Schema({
 userSchema.virtual('url').get(function () {
   return `/users/${this.username}`;
 });
+
+userSchema.virtual('adminUrl').get(function () {
+  return `/users/${this._id}/admin`;
+})
+
 module.exports = mongoose.model('User', userSchema);

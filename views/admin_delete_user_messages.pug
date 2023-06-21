@@ -1,0 +1,23 @@
+extends layout 
+
+block content 
+  h1 Delete Users Messages
+  p User: #[a(href=userInfo.url) #{userInfo.username}]
+
+  if messages.length 
+    .messages   
+      each message in messages 
+        .message 
+          p: a(href=message.url) #{message.title}
+    
+    form(method='post' action='')
+      input#delete_messages(type='checkbox' name='delete_messages' value='delete')
+      label(for='delete_messages') Delete All Messages 
+      button(type='submit') Delete
+
+    if errors 
+      each error in errors 
+        p= error.msg
+
+  else 
+    p No messages to display

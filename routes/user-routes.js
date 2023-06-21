@@ -18,6 +18,9 @@ userRouter.post('/:username/membership-status', userController.post_membership_s
 userRouter.get('/:username/delete-account', userController.get_delete_account);
 userRouter.post('/:username/delete-account', userController.post_delete_account);
 
+userRouter.get('/:id/admin/delete_user_messages', userController.get_admin_delete_user_messages);
+userRouter.post('/:id/admin/delete_user_messages', userController.post_admin_delete_user_messages);
+
 userRouter.use('/:username', userController.get_user_details);
 
 module.exports = userRouter;

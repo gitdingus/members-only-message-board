@@ -7,6 +7,19 @@ const Message = require('../models/message.js');
 const Secret = require('../models/secret.js');
 const { validPassword, generateSaltHash, passwordConfig } = require('../utils/passwordUtils.js');
 
+const isAdmin = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.memberStatus !== 'Admin') {
+      const err = createError(403, 'Forbidden');
+      return next(err);
+    }
+  } else {
+    const err = createError(401, 'Unauthorized');
+    return next(err);
+  }
+
+  next();
+}
 const isLoggedInUser = (req, res, next) => {
   if (req.isAuthenticated()) {
     if (req.user.username !== req.params.username) {
@@ -286,4 +299,43 @@ exports.post_delete_account = [
     }
     
   }),
-]
+];
+
+exports.get_admin_delete_user_messages = [
+  isAdmin,
+  asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.params.id, 'username').exec();
+    const messages = await Message.find({ author: req.params.id }).exec();
+  
+    res.render('admin_delete_user_messages', {
+      user: req.user,
+      userInfo: user,
+      title: 'Admin - Delete User Messages',
+      messages: messages,
+    });
+  }),
+];
+
+exports.post_admin_delete_user_messages = [
+  isAdmin,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.params.id, 'username').exec();
+    const messages = await Message.find({ author: req.params.id }).exec();
+  
+    if (req.body.delete_messages !== 'delete') {
+      res.render('admin_delete_user_messages', {
+        user: req.user,
+        userInfo: user,
+        title: 'Admin - Delete User Messages',
+        messages: messages,
+        errors: [{ msg: 'Must check box to delete messages'}],
+      });
+      return;
+    } else {
+      const deleteMessages = await Message.deleteMany({ author: req.params.id }).exec();
+      res.redirect(user.url);
+    }
+  }),
+];
