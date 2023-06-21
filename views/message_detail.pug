@@ -10,12 +10,12 @@ block content
     .message
       h2 !{message.title} 
       p.body !{message.body} 
-      if message.timestamp && message.author
-        .byline 
-          p
-            span: a(href=message.author.url) !{message.author.username} 
-            | on
-            span  !{message.timestamp.toLocaleString()}
+      .byline 
+        p
+          if message.author 
+            span: a(href=message.author.url || '/') #{message.author.username || ''} 
+            | on 
+            span !{message.timestamp.toLocaleString()}
 
   if user && user.memberStatus === 'Admin' 
     a(href=`${message.url}/delete`) Delete Message
