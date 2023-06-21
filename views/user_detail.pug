@@ -6,7 +6,7 @@ block head
 block content 
 
   if isUsersOwnProfile 
-    .userOptions.side
+    .user-options.options-list.side
       h2 Manage Account 
       ul
         li: a(href=`${user.url}/update-info`) Update Personal Information 

@@ -4,6 +4,13 @@ block head
   link(rel='stylesheet' href='/styles/message_detail.css')
   
 block content 
+
+  if user && user.memberStatus === 'Admin'
+    .admin-actions.options-list.side 
+      h2 Admin Actions
+      ul
+        li: a(href=`${message.url}/delete`) Delete Message 
+
   if !message
     p There has been a problem displaying the message 
   else 
@@ -16,6 +23,3 @@ block content
             span: a(href=message.author.url || '/') #{message.author.username || ''} 
             | on 
             span !{message.timestamp.toLocaleString()}
-
-  if user && user.memberStatus === 'Admin' 
-    a(href=`${message.url}/delete`) Delete Message
