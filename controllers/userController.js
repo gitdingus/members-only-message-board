@@ -370,3 +370,49 @@ exports.post_admin_set_user_status = [
     res.redirect(user.url);
   }),
 ];
+
+exports.get_admin_delete_user = [
+  isAdmin,
+  asyncHandler(async(req, res, next) => {
+    const user = await User.findById(req.params.id).exec();
+
+    res.render('admin_delete_user', {
+      user: req.user,
+      title: 'Delete User',
+      userInfo: user,
+    });
+    return;
+  }),
+];
+
+exports.post_admin_delete_user = [
+  isAdmin,
+  express.json(),
+  express.urlencoded({ extended: false }),
+  asyncHandler(async(req, res, next) => {
+    const user = await User.findById(req.params.id).exec();
+    const { delete_user, delete_messages } = req.body;
+
+    if (user === null) {
+      const err = createError(404, 'User not found')
+      return next(err);
+    }
+    if (delete_user !== 'delete') {
+      res.render('admin_delete_user', {
+        user: req.user,
+        title: 'Delete User',
+        userInfo: user,
+        errors: [{ msg: 'Must select delete user to proceed' }],
+      });
+      return;
+    } else {
+      if (delete_messages === 'delete') {
+        await Message.deleteMany({ author: req.params.id });
+      }
+
+      await User.findByIdAndDelete(req.params.id);
+
+      res.redirect('/');
+    }
+  }),
+];

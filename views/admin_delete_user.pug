@@ -1,0 +1,16 @@
+extends layout 
+
+block content 
+  h1 Delete User 
+  p User #[a(href=userInfo.url) #{userInfo.username}]
+
+  form(method='post' action='')
+    input#delete_user(type='checkbox' name='delete_user' value='delete')
+    label(for='delete_user') Delete User 
+    input#delete_messages(type='checkbox' name='delete_messages' value='delete')
+    label(for='delete_messages') Delete Messages 
+    button(type='submit') Delete 
+    
+  if errors 
+    each error in errors 
+      p= error.msg

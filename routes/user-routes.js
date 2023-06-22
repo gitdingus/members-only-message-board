@@ -24,6 +24,9 @@ userRouter.post('/:id/admin/delete_user_messages', userController.post_admin_del
 userRouter.get('/:id/admin/set_user_status', userController.get_admin_set_user_status);
 userRouter.post('/:id/admin/set_user_status', userController.post_admin_set_user_status);
 
+userRouter.get('/:id/admin/delete_user', userController.get_admin_delete_user);
+userRouter.post('/:id/admin/delete_user', userController.post_admin_delete_user);
+
 userRouter.use('/:username', userController.get_user_details);
 
 module.exports = userRouter;
