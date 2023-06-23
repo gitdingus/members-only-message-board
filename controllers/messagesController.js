@@ -102,6 +102,7 @@ exports.post_create_message = [
     const message = new Message({
       title: req.body.title,
       body: req.body.body,
+      timestamp: Date.now(),
     });
 
     if (!errors.isEmpty()) {
