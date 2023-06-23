@@ -1,4 +1,6 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const path = require('path');
 const express = require('express');
@@ -8,6 +10,7 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const asyncHandler = require('express-async-handler');
 const createError = require('http-errors');
+const morgan = require('morgan');
 const authRouter = require('./routes/authentication-routes');
 const messageRouter = require('./routes/message-routes.js');
 const userRouter = require('./routes/user-routes');
@@ -33,6 +36,12 @@ const mongoStore = MongoStore.create({
 });
 
 require('./utils/configPassportLocalStrategy.js');
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+} else if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('common'));
+}
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -119,15 +128,16 @@ app.use((err, req, res, next) => {
   });
 })
 
-app.listen(process.env.PORT, () => {
-  console.log(`Listening on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
 
 function failedLoginAttempt(messages) {
   if (!Array.isArray(messages)) {
     return false;
   }
-  
+
   for (let i = 0; i < messages.length; i+= 1) {
     if (messages[i] === 'invalid-login-attempt') {
       return true;
