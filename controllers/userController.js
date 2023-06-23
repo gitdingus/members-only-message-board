@@ -48,37 +48,50 @@ exports.get_user_details = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  const user = await User
-    .findOne({ username: req.params.username })
-    .select({ salt: 0, hash: 0 })
-    .exec();
+    const skip = Number.parseInt(req.query.skip) || 0;
+    const limit = 10;
 
-  if (user === null) {
-    const err = createError(404, 'User not found');
-    return next(err);
-  }
-  
-  const messages = await Message.find({ author: user._id }).exec(); 
-  const restrictedFields = ['firstName', 'lastName', 'email'];
-  const isAdmin = req.user.memberStatus === 'Admin';
-  const isUsersOwnProfile = req.user.username === req.params.username;
+    const prevResults = (skip > 0) ? `${req.baseUrl}?skip=${skip - limit}` : null;
+    const nextResults = `${req.baseUrl}?skip=${skip + limit}`;
 
-  if (isUsersOwnProfile === false && user.publicProfile !== true) {
-    restrictedFields.forEach((field) => {
-      user[field] = undefined;
+    const user = await User
+      .findOne({ username: req.params.username })
+      .select({ salt: 0, hash: 0 })
+      .exec();
+
+    if (user === null) {
+      const err = createError(404, 'User not found');
+      return next(err);
+    }
+    
+    const messages = await Message
+      .find({ author: user._id })
+      .skip(skip)
+      .limit(limit)
+      .exec(); 
+
+    const restrictedFields = ['firstName', 'lastName', 'email'];
+    const isAdmin = req.user.memberStatus === 'Admin';
+    const isUsersOwnProfile = req.user.username === req.params.username;
+
+    if (isUsersOwnProfile === false && user.publicProfile !== true) {
+      restrictedFields.forEach((field) => {
+        user[field] = undefined;
+      });
+    }
+
+    res.render('user_detail', {
+      title: `Profile - ${user.username}`,
+      user: req.user,
+      userInfo: user,
+      messages,
+      prevPage: prevResults,
+      nextPage: nextResults,
+      isUsersOwnProfile,
+      isAdmin,
     });
-  }
-
-  res.render('user_detail', {
-    title: `Profile - ${user.username}`,
-    user: req.user,
-    userInfo: user,
-    messages,
-    isUsersOwnProfile,
-    isAdmin,
-  });
-
-});
+  }),
+];
 
 exports.get_update_info = [
   isLoggedInUser,

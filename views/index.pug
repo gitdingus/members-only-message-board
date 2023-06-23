@@ -4,7 +4,7 @@ block content
   h2 Messages 
 
   .messages
-    if messages
+    if messages.length > 0
       each message in messages 
         .message 
           p: a(href=message.url) #{message.title}
@@ -14,6 +14,11 @@ block content
                 span: a(href=message.author.url || '/') #{message.author.username || ''} 
                 | on 
                 span !{message.timestamp.toLocaleString()}
-
     else 
       p There are no messages.
+
+    ul.pagination
+      if prevPage 
+        li: a(href=prevPage) Prev
+      if messages.length > 0 
+        li: a(href=nextPage) Next

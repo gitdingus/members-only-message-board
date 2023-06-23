@@ -57,17 +57,29 @@ app.get('/',
     const messageQuery = Message.find({}, 'title');
     const privledgedUsers = ['Admin', 'Member'];
 
+    const skip = Number.parseInt(req.query.skip) || 0;
+    const limit = 10;
+
+    const prevResults = (skip > 0) ? `${req.path}?skip=${skip - limit}` : null;
+    const nextResults = `${req.path}?skip=${skip + limit}`;
+
     if (req.isAuthenticated() && privledgedUsers.includes(req.user.memberStatus)) {
       messageQuery 
         .select('timestamp author')
         .populate('author', 'username');
     }
 
-    const messages = await messageQuery.sort({timestamp: 'desc'}).exec();
-    
+    const messages = await messageQuery
+      .sort({timestamp: 'desc'})
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
     res.render('index', {
       user: req.user,
       messages: messages,
+      prevPage: prevResults,
+      nextPage: nextResults,
     });  
   }),
 );

@@ -38,7 +38,7 @@ block content
 
 
   .messages
-  if messages
+  if messages.length > 0
     each message in messages 
       .message 
         p: a(href=message.url) #{message.title}
@@ -46,7 +46,11 @@ block content
         if (message.author && message.timestamp)
           .byline 
             p Left on #[span #{message.timestamp.toLocaleString()}]
+  else 
+    p There are no messages 
 
-  if isAdmin
-    p Placeholder: Hello Admin 
-  
+  ul.pagination
+    if prevPage 
+      li: a(href=prevPage) Prev
+    if messages.length > 0 
+      li: a(href=nextPage) Next
