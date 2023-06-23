@@ -7,7 +7,6 @@ const User = require('../models/user.js');
 const Secret = require('../models/secret.js');
 const { generateSaltHash, passwordConfig } = require('../utils/passwordUtils.js');
 
-
 exports.get_register = (req, res, next) => {
   res.render('register_form', {
     title: 'Register',
@@ -99,7 +98,7 @@ exports.post_register = [
 exports.post_login = [
   express.json(),
   express.urlencoded({ extended: false }),
-  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/' }),
+  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/', failureMessage: 'invalid-login-attempt' }),
 ];
 
 exports.get_logout = (req, res, next) => {

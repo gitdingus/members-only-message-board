@@ -9,3 +9,6 @@ div.login
     .buttons  
       a(href='/register') Create Account
       button(type='submit') Login
+
+  if loginAttempt
+    p= loginAttempt

@@ -80,6 +80,7 @@ app.get('/',
       messages: messages,
       prevPage: prevResults,
       nextPage: nextResults,
+      loginAttempt: failedLoginAttempt(req.session.messages) ? 'Invalid username/password' : null,
     });  
   }),
 );
@@ -112,3 +113,17 @@ app.use((err, req, res, next) => {
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);
 });
+
+function failedLoginAttempt(messages) {
+  if (!Array.isArray(messages)) {
+    return false;
+  }
+  
+  for (let i = 0; i < messages.length; i+= 1) {
+    if (messages[i] === 'invalid-login-attempt') {
+      return true;
+    }
+  }
+
+  return false;
+}
