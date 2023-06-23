@@ -53,6 +53,15 @@ app.use('/messages', messageRouter);
 app.use('/users', userRouter);
 
 app.get('/',
+  (req, res, next) => { // Check if user is banned
+    if (req.isAuthenticated()) {
+      if (req.user.memberStatus === 'Banned') {
+        const err = createError(403, 'Forbidden');
+        return next(err);
+      }
+    } // Doesn't handle unauthenticated requests.
+    next();
+  },
   asyncHandler(async(req, res, next) => {
     const messageQuery = Message.find({}, 'title');
     const privledgedUsers = ['Admin', 'Member'];

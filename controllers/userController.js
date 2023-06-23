@@ -20,6 +20,30 @@ const isAdmin = (req, res, next) => {
 
   next();
 }
+
+const isNotBannedOrRestricted = (req, res, next) => {
+  const bannedOrRestricted = [ 'Banned', 'Restricted' ];
+
+  if (req.isAuthenticated()) {
+    if (bannedOrRestricted.includes(req.user.memberStatus)) {
+      const err = createError(403, 'Forbidden');
+      return next(err);
+    }
+  } // Doesn't handle unauthenticated requests.
+
+  next();
+}
+
+const isNotBanned = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.memberStatus === 'Banned') {
+      const err = createError(403, 'Forbidden');
+      return next(err);
+    }
+  } // Doesn't handle unauthenticated requests.
+  next();
+}
+
 const isLoggedInUser = (req, res, next) => {
   if (req.isAuthenticated()) {
     if (req.user.username !== req.params.username) {
@@ -34,19 +58,21 @@ const isLoggedInUser = (req, res, next) => {
   next();
 };
 
-exports.get_user_details = asyncHandler(async (req, res, next) => {
-  const privledgedUsers = ['Admin', 'Member'];
+exports.get_user_details = [
+  isNotBanned,
+  asyncHandler(async (req, res, next) => {
+    const privledgedUsers = ['Admin', 'Member'];
 
-  if (req.isAuthenticated()) {
-    if (!(privledgedUsers.includes(req.user.memberStatus) 
-      || req.user.username === req.params.username)) {
-        const err = createError(403, 'Forbidden');
-        return next(err);
+    if (req.isAuthenticated()) {
+      if (!(privledgedUsers.includes(req.user.memberStatus) 
+        || req.user.username === req.params.username)) {
+          const err = createError(403, 'Forbidden');
+          return next(err);
+      }
+    } else {
+      const err = createError(401, 'Unauthorized');
+      return next(err);
     }
-  } else {
-    const err = createError(401, 'Unauthorized');
-    return next(err);
-  }
 
     const skip = Number.parseInt(req.query.skip) || 0;
     const limit = 10;

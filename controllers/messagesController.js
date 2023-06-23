@@ -20,38 +20,68 @@ const adminOnly = (req, res, next) => {
   next();
 }
 
-exports.get_message_detail = asyncHandler(async (req, res, next) => {
-  let projection = 'title body';
-  const messageQuery = Message.findById(req.params.id).select('title body');
-  const privledgedUsers = ['Admin', 'Member'];
-  if (req.isAuthenticated() === true && privledgedUsers.includes(req.user.memberStatus) === true) {
-    messageQuery
-      .select('author timestamp')
-      .populate('author', 'username');
-  }
+const isNotBannedOrRestricted = (req, res, next) => {
+  const bannedOrRestricted = [ 'Banned', 'Restricted' ];
 
-  const message = await messageQuery.exec();
+  if (req.isAuthenticated()) {
+    if (bannedOrRestricted.includes(req.user.memberStatus)) {
+      const err = createError(403, 'Forbidden');
+      return next(err);
+    }
+  } // Doesn't handle unauthenticated requests.
 
-  res.render('message_detail', {
-    title: 'View Message',
-    message: message,
-    user: req.user,
-  });
-});
+  next();
+}
 
-exports.get_create_message = (req, res, next) => {
-  if (req.isAuthenticated() === false) {
-    const err = createError(401, 'Unauthorized');
-    return next(err);
-  }
+const isNotBanned = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.memberStatus === 'Banned') {
+      const err = createError(403, 'Forbidden');
+      return next(err);
+    }
+  } // Doesn't handle unauthenticated requests.
+  next();
+}
 
-  res.render('message_form', {
-    title: 'Create Message',
-    user: req.user,
-  });
-};
+exports.get_message_detail = [
+  isNotBanned,
+  asyncHandler(async (req, res, next) => {
+    let projection = 'title body';
+    const messageQuery = Message.findById(req.params.id).select('title body');
+    const privledgedUsers = ['Admin', 'Member'];
+    if (req.isAuthenticated() === true && privledgedUsers.includes(req.user.memberStatus) === true) {
+      messageQuery
+        .select('author timestamp')
+        .populate('author', 'username');
+    }
+
+    const message = await messageQuery.exec();
+
+    res.render('message_detail', {
+      title: 'View Message',
+      message: message,
+      user: req.user,
+    });
+  }),
+]
+
+exports.get_create_message = [
+  isNotBannedOrRestricted,
+  asyncHandler(async (req, res, next) => {
+    if (req.isAuthenticated() === false) {
+      const err = createError(401, 'Unauthorized');
+      return next(err);
+    }
+
+    res.render('message_form', {
+      title: 'Create Message',
+      user: req.user,
+    });
+  }),
+];
 
 exports.post_create_message = [
+  isNotBannedOrRestricted,
   express.json(),
   express.urlencoded({ extended: false }),
   body('title', 'Title must be between 1 and 50 characters')
