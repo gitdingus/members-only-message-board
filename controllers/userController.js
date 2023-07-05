@@ -156,6 +156,10 @@ exports.post_update_info = [
     .custom(async (requestedEmail, { req }) => {
       const user = await User.findOne({ email: requestedEmail }, 'email');
 
+      if (user === null) {
+        return true;
+      }
+
       // if email exists and not logged in users THROW ERROR
       // returning falsey value with async function does not work.
       if (user._id.toString() !== req.user._id.toString()) {
